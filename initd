@@ -1,0 +1,18 @@
+#!/bin/bash
+qtd_linha_display=30
+
+if [ $2 ]; then
+	qtd_linha_display=$2
+fi
+
+case $1 in
+	"start") killall -9 checa_status.sh ; killall -9 /root/.nvm/versions/node/v16.8.0/bin/node ; cd /opt/wppconnect-server/ && nohup yarn dev & /opt/wppconnect-server/checa_status.sh & ] ;;
+
+	"restart") killall -9 checa_status.sh ; killall -9 /root/.nvm/versions/node/v16.8.0/bin/node ; cd /opt/wppconnect-server/ && nohup yarn dev & /opt/wppconnect-server/checa_status.sh & ;;
+
+	# killall -9 /root/.nvm/versions/node/v16.8.0/bin/node & cd /opt/wppconnect-server/ && yarn dev & ;;
+	"stop") killall -9 checa_status.sh ; killall -9 /root/.nvm/versions/node/v16.8.0/bin/node & ;;
+
+	"display") tail -f --lines=$qtd_linha_display /opt/wppconnect-server/nohup.out & ;;
+	*) echo "Opcao invalida." ;;
+esa
