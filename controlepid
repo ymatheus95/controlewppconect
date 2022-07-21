@@ -1,0 +1,42 @@
+#!/bin/bash
+#Auto: Matheus Alves dos Santos
+#Chamado: 68339
+
+URL='localhost:21465/api-docs/'
+LOG='/var/log/wppconnect/'
+RESULT=$(curl -Is $URL | head -n 1)
+HOJE=$(date +"%d-%m-%y")
+DATE_TIME=$(date)
+echo $RESULT
+echo "$DATE_TIME - Iniciando monitoramento..." >> $LOG/$HOJE.log
+sleep 60
+echo "$DATE_TIME - Monitoramento iniciado." >> $LOG/$HOJE.log
+while :; do
+RESULT=$(curl -Is $URL | head -n 1)
+if [ -z "$RESULT" ] ; then
+
+    killall -9 /root/.nvm/versions/node/v16.8.0/bin/node & cd /opt/wppconnect-server/ && nohup yarn dev &
+    
+    echo "$DATE_TIME - Wppconnect apresentou falaha e será reiniciand." >> $LOG/$HOJE.log
+    cont=0
+    while [ $cont -le 600 ]; do
+	    RESULT=$(curl -Is $URL | head -n 1)
+	    if [ "$RESULT" ] ; then
+		    echo "$DATE_TIME - Sistema reestabelecido." >> $LOG/$HOJE.log
+                    break
+	   fi
+#	  echo "$DATE_TIME - $cont" >> $LOG/$HOJE.log
+	     cont=$(( $cont + 1 ))
+	    
+	   sleep 1
+	  
+	   if [ -z "$RESULT" -a $cont -gt 599  ] ; then 
+		   echo "$DATE_TIME - Nao foi possivel reestabelecer o Wppconnect." >> $LOG/$HOJE.log
+		   break
+           fi
+         
+    done
+
+fi
+sleep 5
+done
